@@ -5,20 +5,22 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
+        "start": "vite",
+        "rebuild": "rm -rf node_modules/moorhen && rm package-lock.json && npm cache clean --force && npm install --legacy-peer-deps && vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview"
     },
     "dependencies": {
-        "react": "19.2.0",
-        "react-dom": "19.2.0",
-        "moorhen": "file:///home/clement/Moorhen/baby-gru/dist/moorhen-0.23.1-alpha.0.tgz",
+        "react": "18.3.1",
+        "react-dom": "18.3.1",
+        "moorhen": "file:///home/clement/Moorhen/baby-gru/dist/moorhen-0.23.1-alpha.0.tgz"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
         "@types/node": "^24.10.1",
-        "@types/react": "^19.2.7",
-        "@types/react-dom": "^19.2.3",
+        "@types/react": "^18.3.1",
+        "@types/react-dom": "^18.3.1",
         "@vitejs/plugin-react": "^5.1.1",
         "eslint": "^9.39.1",
         "eslint-plugin-react-hooks": "^7.0.1",

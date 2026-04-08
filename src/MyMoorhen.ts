@@ -1,15 +1,21 @@
-import { MoorhenWebComponent } from "moorhen";
+import { addMolecule, MoorhenMolecule, MoorhenWebComponent } from "moorhen";
 import type { MainMenuEntrySubMenu, SubMenuMap } from "moorhen";
+import type { MoorhenWebComponentAttributes } from "moorhen";
+
+declare module "react" {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace JSX {
+        interface IntrinsicElements {
+            "my-moorhen": MoorhenWebComponentAttributes;
+        }
+    }
+}
 
 const baseUrl = "https://www.ebi.ac.uk/pdbe/entry-files";
 
-class MyMoorhen extends MoorhenWebComponent {
-    constructor() {
-        super();
-    }
-
+export class MyMoorhen extends MoorhenWebComponent {
     public onInit = () => {
-        const menuSystem = this.moorhenInstance.getMenuSystem();
+        const menuSystem = this.moorhenInstance!.getMenuSystem();
 
         const extraMainMenu: MainMenuEntrySubMenu = {
             type: "sub-menu",
@@ -27,7 +33,7 @@ class MyMoorhen extends MoorhenWebComponent {
                         id: "extra-menu-1",
                         type: "item",
                         label: "Load 1BXN",
-                        onClick: () => {},
+                        onClick: () => this.fetchMolecule(`${baseUrl}/1bxn.cif`, "1BXN"),
                     },
                     {
                         id: "extra-menu-2",
@@ -45,36 +51,42 @@ class MyMoorhen extends MoorhenWebComponent {
             },
         };
 
-        // menuSystem.addMainMenu(extraMainMenu, 2);
+        menuSystem.addMainMenu(extraMainMenu, 2);
         menuSystem.addSubmenu(extraMenu);
     };
 
-    // async fetchMolecule(url: string, molName: string) {
-    //     const dispatch = this.moorhenInstance.getDispatch();
-    //     const store = this.moorhenInstance.getStore();
-    //     const monomerLibraryPath = this.moorhenInstance.paths.monomerLibraryPath;
-    //     const commandCentre = this.moorhenInstance.getCommandCentreRef();
-    //     const newMolecule = new MoorhenMolecule(commandCentre, store, monomerLibraryPath);
+    async fetchMolecule(url: string, molName: string) {
+        const moorhenInstance = this.moorhenInstance;
+        if (!moorhenInstance) {
+            console.warn("Moorhen instance not ready yet, cannot fetch molecule.");
+            return;
+        }
 
-    //     try {
-    //         await newMolecule.loadToCootFromURL(url, molName);
-    //         if (newMolecule.molNo === -1) {
-    //             throw new Error("Cannot read the fetched molecule...");
-    //         }
-    //         await newMolecule.fetchIfDirtyAndDraw("CBs");
-    //         await newMolecule.addRepresentation("ligands", "/*/*/*/*");
-    //         await newMolecule.centreOn("/*/*/*/*", true, true);
+        const dispatch = moorhenInstance.getDispatch();
+        const store = moorhenInstance.getStore();
+        const monomerLibraryPath = moorhenInstance.paths.monomerLibraryPath;
+        const commandCentre = moorhenInstance.getCommandCentreRef();
+        const newMolecule = new MoorhenMolecule(commandCentre, store, monomerLibraryPath);
 
-    //         dispatch(addMolecule(newMolecule));
-    //     } catch (err) {
-    //         console.warn(err);
-    //         console.warn(`Cannot fetch PDB entry from ${url}, doing nothing...`);
-    //     }
-    // }
+        try {
+            await newMolecule.loadToCootFromURL(url, molName);
+            if (newMolecule.molNo === -1) {
+                throw new Error("Cannot read the fetched molecule...");
+            }
+            await newMolecule.fetchIfDirtyAndDraw("CBs");
+            await newMolecule.addRepresentation("ligands", "/*/*/*/*");
+            await newMolecule.centreOn("/*/*/*/*", true, true);
 
-    // async loadPDB(pdbCode: string) {
-    //     await this.fetchMolecule(`${baseUrl}/download/${pdbCode}.cif`, pdbCode);
-    // }
+            dispatch(addMolecule(newMolecule));
+        } catch (err) {
+            console.warn(err);
+            console.warn(`Cannot fetch PDB entry from ${url}, doing nothing...`);
+        }
+    }
+
+    async loadPDB(pdbCode: string) {
+        await this.fetchMolecule(`${baseUrl}/download/${pdbCode}.cif`, pdbCode);
+    }
 }
 
 customElements.define("my-moorhen", MyMoorhen);

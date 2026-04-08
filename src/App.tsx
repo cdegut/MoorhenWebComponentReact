@@ -1,48 +1,66 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { useEffect, useState } from "react";
+import React from "react";
 import "./MyMoorhen";
-
-
+import "./App.css";
+import { MyMoorhen } from "./MyMoorhen";
 
 function App() {
-    const [count, setCount] = useState(0);
+    const [width, setWidth] = useState(1024);
+    const [height, setHeight] = useState(768);
+    useEffect(() => {
+        const myMoorhenElement = document.getElementById("my-moorhen") as MyMoorhen;
+        const moorhenInstance = myMoorhenElement.moorhenInstance;
+        if (!moorhenInstance) {
+            return;
+        }
+        moorhenInstance.width = width;
+        moorhenInstance.height = height;
+    }, [width, height]);
 
     return (
-        <>
-            <div>
-                <a
-                    href="https://vite.dev"
-                    target="_blank"
-                >
-                    <img
-                        src={viteLogo}
-                        className="logo"
-                        alt="Vite logo"
-                    />
-                </a>
-                <a
-                    href="https://react.dev"
-                    target="_blank"
-                >
-                    <img
-                        src={reactLogo}
-                        className="logo react"
-                        alt="React logo"
-                    />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
+        <div className="app">
+            <header className="app-header">
+                <h1>Moorhen Web Component — React Demo</h1>
                 <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
+                    An example of integrating the <code>&lt;my-moorhen&gt;</code> web component into a React
+                    application.
+                    <br />
+                    This uses React version: <strong>{React.version}</strong> while Moorhen use version{" "}
+                    <strong> 19.2.0</strong>
                 </p>
+            </header>
+
+            <div className="controls">
+                <label>
+                    Width
+                    <input
+                        type="number"
+                        min={200}
+                        max={3000}
+                        step={10}
+                        value={width}
+                        onChange={(e) => setWidth(Number(e.target.value))}
+                    />
+                    px
+                </label>
+                <label>
+                    Height
+                    <input
+                        type="number"
+                        min={200}
+                        max={2000}
+                        step={10}
+                        value={height}
+                        onChange={(e) => setHeight(Number(e.target.value))}
+                    />
+                    px
+                </label>
             </div>
-            <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-            <my-moorhen/>
-        </>
+
+            <div className="viewer-container">
+                <my-moorhen id="my-moorhen" />
+            </div>
+        </div>
     );
 }
 
