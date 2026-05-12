@@ -23,26 +23,22 @@ function App() {
     const moorhenInstanceRef = useWebComponentInstanceRef("my-moorhen");
     const openedMolecules = useMoorhenSelector("my-moorhen", (state) => state.molecules.moleculeList);
 
+    // I am not sure there is a better way than using effect hooks to update the web component when the state changes.
+    // Mutating refs directly render is supposed to be a bad thing too...
     useEffect(() => {
         if (!moorhenInstanceRef.current) {
             return;
-        }
-        moorhenInstanceRef.current.width = width;
+        }     
         moorhenInstanceRef.current.height = height;
-    }, [width, height]);
-
-    useEffect(() => {
-        if (!moorhenInstanceRef.current) {
-            return;
-        }
-    }, []);
+        moorhenInstanceRef.current.width = width;
+    }, [width, height, moorhenInstanceRef]);
 
     useEffect(() => {
         if (!moorhenInstanceRef.current) {
             return;
         }
         moorhenInstanceRef.current.sceneSettings.setBackgroundColor([...backgroundColor, 255]);
-    }, [backgroundColor]);
+    }, [backgroundColor, moorhenInstanceRef]);
 
     return (
         <div className="app">
@@ -69,7 +65,13 @@ function App() {
                         max={3000}
                         step={10}
                         value={width}
-                        onChange={(e) => setWidth(Number(e.target.value))}
+                        onChange={(e) => {
+                            const newWidth = Number(e.target.value);
+                            if (moorhenInstanceRef.current) {
+                                moorhenInstanceRef.current.width = newWidth;
+                            }
+                            setWidth(newWidth);
+                        }}
                     />
                     px
                 </label>
@@ -81,7 +83,13 @@ function App() {
                         max={2000}
                         step={10}
                         value={height}
-                        onChange={(e) => setHeight(Number(e.target.value))}
+                        onChange={(e) => {
+                            const newHeight = Number(e.target.value);
+                            if (moorhenInstanceRef.current) {
+                                moorhenInstanceRef.current.height = newHeight;
+                            }
+                            setHeight(newHeight);
+                        }}
                     />
                     px
                 </label>
