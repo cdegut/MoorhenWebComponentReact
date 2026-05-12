@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MoorhenWebComponentAttributes, registerMoorhenWebComponent } from "moorhen/web-component";
 import React from "react";
 import "./App.css";
-import { useMoorhenSelector, useWebComponentInstanceRef } from "moorhen/hooks";
+import { useMoorhenSelector, useWebComponentInstanceRef } from "moorhen/web-component/utils";
 
 registerMoorhenWebComponent();
 

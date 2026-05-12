@@ -14,7 +14,7 @@
     "dependencies": {
         "react": "18.3.1",
         "react-dom": "18.3.1",
-        "moorhen": "file:///home/clement/Moorhen/baby-gru/dist/moorhen-1.0.0-alpha.2.tgz"
+        "moorhen": "file:///home/clement/Moorhen/baby-gru/dist/moorhen-1.0.0-alpha.3.tgz"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
