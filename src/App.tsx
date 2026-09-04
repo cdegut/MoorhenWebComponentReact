@@ -16,11 +16,11 @@ declare module "react" {
 }
 
 function App() {
-    const [width, setWidth] = useState(1024);
-    const [height, setHeight] = useState(768);
+    const [width, setWidth] = useState(1600);
+    const [height, setHeight] = useState(1200);
     const [backgroundColor, setBackgroundColor] = useState<[number, number, number]>([1, 1, 1]);
 
-    const moorhenInstanceRef = useWebComponentInstanceRef("my-moorhen");
+    const [ready ,moorhenInstanceRef] = useWebComponentInstanceRef("my-moorhen");
     const openedMolecules = useMoorhenSelector("my-moorhen", (state) => state.molecules.moleculeList);
 
     // I am not sure there is a better way than using effect hooks to update the web component when the state changes.
@@ -129,7 +129,9 @@ function App() {
             </div>
 
             <div className="viewer-container">
-                <moorhen-web-component width={width} height={height} id="my-moorhen" />
+                <moorhen-web-component width={width} height={height} id="my-moorhen">
+                        <div slot="test-slot"><moorhen-web-component width={500} height={500}/></div>
+                </moorhen-web-component>
             </div>
         </div>
     );
