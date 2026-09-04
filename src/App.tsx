@@ -4,6 +4,7 @@ import React from "react";
 import "./App.css";
 import { useMoorhenSelector, useWebComponentInstanceRef } from "moorhen/web-component/utils";
 
+
 registerMoorhenWebComponent();
 
 declare module "react" {
@@ -39,6 +40,27 @@ function App() {
         }
         moorhenInstanceRef.current.sceneSettings.setBackgroundColor([...backgroundColor, 255]);
     }, [backgroundColor, moorhenInstanceRef]);
+
+    useEffect(() => {
+        if (!moorhenInstanceRef.current) {
+            return;
+        }
+        moorhenInstanceRef.current.menuSystem?.addMainMenu({
+            type: "sub-menu",
+            label: "Extra Menu",
+            icon: "MatSymAdd",
+            menu: "extra-menu",
+            align: 5,
+        }, 2);
+
+        moorhenInstanceRef.current.menuSystem?.addSubmenu({
+            "extra-menu": {
+                label: "Extra",
+                items: [
+                    {id: "my-menu-slot", label: "Menu Slot", type: "HTMLslot", slotName: "custom-menu"},
+                ],
+            }})
+        }, [moorhenInstanceRef, ready]);
 
     return (
         <div className="app">
@@ -130,7 +152,7 @@ function App() {
 
             <div className="viewer-container">
                 <moorhen-web-component width={width} height={height} id="my-moorhen">
-                        <div slot="test-slot"><moorhen-web-component width={500} height={500}/></div>
+                        <div slot="custom-menu"><moorhen-web-component width={500} height={500}/></div>
                 </moorhen-web-component>
             </div>
         </div>
