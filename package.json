@@ -7,14 +7,14 @@
         "dev": "vite",
         "start": "vite",
         "rebuild": "rm -rf node_modules/moorhen && rm package-lock.json && npm cache clean --force && npm install --legacy-peer-deps && cp -r node_modules/moorhen/public/MoorhenAssets public/. && vite",
-        "build": "tsc -b && vite build",
+        "build": "cp -r node_modules/moorhen/public/MoorhenAssets public/ && tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview"
     },
     "dependencies": {
         "react": "18.3.1",
         "react-dom": "18.3.1",
-        "moorhen": "file:///home/clement/Moorhen/baby-gru/dist/moorhen-1.0.0-alpha.3.tgz"
+        "moorhen": "1.0.1"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
