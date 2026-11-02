@@ -12,9 +12,10 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "moorhen": "file:/Users/stuart/Moorhen-11082026/baby-gru/dist/moorhen-1.0.2.tgz",
+        "moorhen-squab": "file:/Users/stuart/MoorhenSquab/npm/moorhen-squab-0.3.1.tgz",
         "react": "18.3.1",
-        "react-dom": "18.3.1",
-        "moorhen": "1.0.1"
+        "react-dom": "18.3.1"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
