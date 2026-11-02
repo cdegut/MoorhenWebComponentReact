@@ -107,3 +107,38 @@ vite.config.ts      dev server, including the cross-origin isolation headers
 - [API reference](https://moorhen.hosted.york.ac.uk/docs/api/index.html)
 - Plain TypeScript version of this example:
   [MoorhenWebComponent](https://github.com/cdegut/MoorhenWebComponent)
+
+## SAXS plugin (MoorhenSquab)
+
+Toby King's SAXS calculator comes as a Moorhen plugin in the `moorhen-squab` package.
+The whole integration is one import and one element inside the web component:
+
+```tsx
+import { SaxsPlugin } from "moorhen-squab/react";
+
+<moorhen-web-component width={width} height={height} id="my-moorhen" view-only={viewOnly}>
+    <SaxsPlugin />
+</moorhen-web-component>
+```
+
+It adds a **SAXS** side panel (switchable to a floating window from its toolbar), a
+**SAXS** main-menu entry and **Calculate → SAXS curves…**. Calculations run in a Web
+Worker inside the package, so Moorhen stays usable; progress shows in the panel and in a
+Moorhen snackbar, with Cancel. Its UI is a `slot="saxs"`
+child rendered by this app's React 18 and projected into the frame Moorhen draws, which
+is why it goes inside the element. See `MoorhenSquab/npm/README.md` for options.
+
+To write a plugin of your own, see [WRITING_PLUGINS.md](WRITING_PLUGINS.md).
+
+`moorhen-squab` is not on npm yet; it is installed from a tarball built in a checkout of
+MoorhenSquab:
+
+```bash
+# in ~/MoorhenSquab/npm (with emsdk active)
+npm install && npm run build && npm pack
+# here
+npm install ~/MoorhenSquab/npm/moorhen-squab-0.3.1.tgz
+```
+
+Re-run both after changing MoorhenSquab. The WASM is embedded in the package, so
+nothing needs copying into `public/`.

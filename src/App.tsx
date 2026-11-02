@@ -4,6 +4,7 @@ import React from "react";
 import "./App.css";
 import { useMoorhenSelector, useWebComponentInstanceRef } from "moorhen/web-component/utils";
 import { useTheme } from "./useTheme";
+import { SaxsPlugin } from "moorhen-squab/react";
 
 
 
@@ -239,7 +240,9 @@ function App() {
             </section>
 
             <div className="viewer-container">
-                <moorhen-web-component width={width} height={height} id="my-moorhen" view-only={viewOnly} />
+                <moorhen-web-component width={width} height={height} id="my-moorhen" view-only={viewOnly}>
+                    <SaxsPlugin />
+                </moorhen-web-component>
             </div>
         </>
     );
