@@ -1,66 +1,25 @@
 import { useEffect, useState } from "react";
-import { MoorhenWebComponentAttributes, registerMoorhenWebComponent } from "moorhen/web-component";
 import React from "react";
+import { registerMoorhenWebComponent, type MoorhenInstance } from "moorhen/web-component";
+import { Moorhen, MoorhenMoleculeSelect, useMoorhenSelector } from "moorhen/web-component/react";
 import "./App.css";
-import { useMoorhenSelector, useWebComponentInstanceRef } from "moorhen/web-component/utils";
+import { ExamplePlugin } from "./plugin";
 
-
+// Defines <moorhen-web-component> and Moorhen's UI elements, used by <Moorhen> and the plugin
 registerMoorhenWebComponent();
-
-declare module "react" {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace JSX {
-        interface IntrinsicElements {
-            "moorhen-web-component": MoorhenWebComponentAttributes;
-        }
-    }
-}
 
 function App() {
     const [width, setWidth] = useState(1600);
     const [height, setHeight] = useState(1200);
     const [backgroundColor, setBackgroundColor] = useState<[number, number, number]>([1, 1, 1]);
 
-    const [ready ,moorhenInstanceRef] = useWebComponentInstanceRef("my-moorhen");
-    const openedMolecules = useMoorhenSelector("my-moorhen", (state) => state.molecules.moleculeList);
-
-    // I am not sure there is a better way than using effect hooks to update the web component when the state changes.
-    // Mutating refs directly render is supposed to be a bad thing too...
-    useEffect(() => {
-        if (!moorhenInstanceRef.current) {
-            return;
-        }     
-        moorhenInstanceRef.current.height = height;
-        moorhenInstanceRef.current.width = width;
-    }, [width, height, moorhenInstanceRef]);
+    // The instance, once Moorhen is ready (onReady below), and a value of its state
+    const [instance, setInstance] = useState<MoorhenInstance | null>(null);
+    const openedMolecules = useMoorhenSelector("my-moorhen", state => state.molecules.moleculeList);
 
     useEffect(() => {
-        if (!moorhenInstanceRef.current) {
-            return;
-        }
-        moorhenInstanceRef.current.sceneSettings.setBackgroundColor([...backgroundColor, 255]);
-    }, [backgroundColor, moorhenInstanceRef]);
-
-    useEffect(() => {
-        if (!moorhenInstanceRef.current) {
-            return;
-        }
-        moorhenInstanceRef.current.menuSystem?.addMainMenu({
-            type: "sub-menu",
-            label: "Extra Menu",
-            icon: "MatSymAdd",
-            menu: "extra-menu",
-            align: 5,
-        }, 2);
-
-        moorhenInstanceRef.current.menuSystem?.addSubmenu({
-            "extra-menu": {
-                label: "Extra",
-                items: [
-                    {id: "my-menu-slot", label: "Menu Slot", type: "HTMLslot", slotName: "custom-menu"},
-                ],
-            }})
-        }, [moorhenInstanceRef, ready]);
+        instance?.sceneSettings.setBackgroundColor([...backgroundColor, 1]);
+    }, [instance, backgroundColor]);
 
     return (
         <div className="app">
@@ -87,13 +46,7 @@ function App() {
                         max={3000}
                         step={10}
                         value={width}
-                        onChange={(e) => {
-                            const newWidth = Number(e.target.value);
-                            if (moorhenInstanceRef.current) {
-                                moorhenInstanceRef.current.width = newWidth;
-                            }
-                            setWidth(newWidth);
-                        }}
+                        onChange={e => setWidth(Number(e.target.value))}
                     />
                     px
                 </label>
@@ -105,13 +58,7 @@ function App() {
                         max={2000}
                         step={10}
                         value={height}
-                        onChange={(e) => {
-                            const newHeight = Number(e.target.value);
-                            if (moorhenInstanceRef.current) {
-                                moorhenInstanceRef.current.height = newHeight;
-                            }
-                            setHeight(newHeight);
-                        }}
+                        onChange={e => setHeight(Number(e.target.value))}
                     />
                     px
                 </label>
@@ -148,12 +95,20 @@ function App() {
                         }
                     />
                 </label>
+                {/* One of Moorhen's UI components outside Moorhen, in the page's own controls. `moorhen` names the
+                    Moorhen it works with (optional here: with a single Moorhen in the page, it finds it by itself). */}
+                <MoorhenMoleculeSelect
+                    moorhen="my-moorhen"
+                    label="Centre on:"
+                    onChange={uniqueId => instance?.getMolecule(uniqueId as string)?.centreOn()}
+                />
             </div>
 
             <div className="viewer-container">
-                <moorhen-web-component width={width} height={height} id="my-moorhen">
-                        <div slot="custom-menu"><moorhen-web-component width={500} height={500}/></div>
-                </moorhen-web-component>
+                <Moorhen id="my-moorhen" width={width} height={height} onReady={setInstance}>
+                    {/* The plugin fills Moorhen's slots and registers itself with this Moorhen */}
+                    <ExamplePlugin />
+                </Moorhen>
             </div>
         </div>
     );
