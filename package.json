@@ -7,7 +7,7 @@
         "dev": "vite",
         "start": "vite",
         "rebuild": "rm -rf node_modules/moorhen && rm package-lock.json && npm cache clean --force && npm install --legacy-peer-deps && cp -r node_modules/moorhen/public/MoorhenAssets public/. && vite",
-        "build": "tsc -b && vite build",
+        "build": "cp -r node_modules/moorhen/public/MoorhenAssets public/ && tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview"
     },
