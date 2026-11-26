@@ -102,7 +102,7 @@ coexist: the element renders in its own shadow root and does not share React wit
 The `moorhen/web-component/react` components set properties and listen to events through a ref, so
 they work the same with React 18 and 19.
 
-Moorhen's package declares a React 19 peer dependency, so install with `--legacy-peer-deps`.
+Moorhen's beta package declares a React 19 peer dependency, so install with `--legacy-peer-deps`.
 
 ## Project layout
 
